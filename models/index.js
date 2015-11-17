@@ -11,12 +11,14 @@ var pageSchema = new Schema({
 	title: {type: String, required: true},
 	urlTitle: {type: String, required: true},
 	content: {type: String, required: true},
-	date: {type : Date. default: Date.now},
+	date: {type : Date, default: Date.now},
 	status: {type: String, enum :['open','closed']},
-	author: {type: Schema.types.Objectid, ref:'User'}
+	author: {type: Schema.Types.ObjectId, ref:'User'}
 
 })
-
+pageSchema.virtual('pathURl').get(function(){
+	return "/wiki/" + this.urlTitle;
+});
 var userSchema = new Schema({
 	name: {type: String, required: true},
 	email: {type: String, required: true, unique: true}

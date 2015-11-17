@@ -3,8 +3,8 @@ var express = require('express'),
     bodyParser = require('body-parser'),
     swig = require('swig'),
     morgan = require('morgan');
-var router = require('./routes/routes.js');
-
+var wikiRouter = require('./routes/wiki.js');
+var userRouter = require('./routes/users.js')
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'html');
@@ -14,9 +14,11 @@ swig.setDefaults({cache:false});
 // app.use(bodyParser.json());
 app.use(morgan("dev"));
 app.use(express.static(__dirname + '/stylesheets'));
-
-app.use(router);
-
+app.get("/", function(req, res){
+	res.render('index', {});
+})
+app.use("/wiki/", wikiRouter);
+app.use("/users/", userRouter);
 app.listen(3000, function() {
     console.log("server listening on port 3000..");
 });
