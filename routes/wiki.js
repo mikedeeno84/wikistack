@@ -13,26 +13,41 @@ router.route('/')
     	res.redirect("/")
     })
     .post(function(req, res){
+    	var userInfo = {
+    		name: req.body.author,
+    		email: req.body.email
+    	}
     	var pageInfo = {
     		title: req.body.title,
     		content: req.body.content,
     		status: req.body.status,
-    		author: req.body.author,
-    		urlTitle: makeUrlTitle(req.body.title)
     	}
-    	var page = new Page (pageInfo);
-    	page.save();
-    	res.redirect("/")
+    	var user = User.find({name: req.body.author}).exec()
+    	if(!user.length){
+    		user = new User(userInfo)
+    				.save()
+    				.then(function(user){
+    					pageInfo.author = user._id;
+    				})
+    				.then(null, function(err){
+    					console.error(err)
+    				})
+    	}
+
+    	
+    	else{
+    	var page = new Page (pageInfo)
+    	page.save().then(function(){
+    		res.redirect("/")})
+    		.then(null, function(err){
+    			console.log(err)
+    		});
+    	}
+    	
     })
 router.route("/add")
 	.get(function(req, res){
 		res.render('addpage', {})
 	});
-
-
-function makeUrlTitle (titleString){
-	return titleString.replace(/\s+/g,"_")
-		.replace(/\W+/g,"")		
-}
 
 module.exports = router;

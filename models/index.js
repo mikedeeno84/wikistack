@@ -24,8 +24,20 @@ var userSchema = new Schema({
 	email: {type: String, required: true, unique: true}
 })
 
+pageSchema.pre('validate', function(next){
+	console.log("this is this: ", this);
+	this.urlTitle=makeUrlTitle(this.title);
+	// this.update(this, {$set: { urlTitle: makeUrlTitle(this.title) }});
+	next();
+})
+
 var Page = mongoose.model("Page", pageSchema);
 var User = mongoose.model("User", userSchema);
+
+function makeUrlTitle (titleString){
+	return titleString.replace(/\s+/g,"_")
+		.replace(/\W+/g,"")		
+}
 
 module.exports = {
 	Page: Page,
