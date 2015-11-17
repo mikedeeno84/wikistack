@@ -13,10 +13,10 @@ var pageSchema = new Schema({
 	content: {type: String, required: true},
 	date: {type : Date, default: Date.now},
 	status: {type: String, enum :['open','closed']},
-	author: {type: Schema.Types.ObjectId, ref:'User'}
-
-})
-pageSchema.virtual('pathURl').get(function(){
+	author: {type: Schema.Types.ObjectId, ref:'User'},
+	tags : [String]
+});
+pageSchema.virtual('route').get(function(){
 	return "/wiki/" + this.urlTitle;
 });
 var userSchema = new Schema({
@@ -36,7 +36,7 @@ var User = mongoose.model("User", userSchema);
 
 function makeUrlTitle (titleString){
 	return titleString.replace(/\s+/g,"_")
-		.replace(/\W+/g,"")		
+		.replace(/\W+/g,"")
 }
 
 module.exports = {
