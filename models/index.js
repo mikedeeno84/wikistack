@@ -30,7 +30,9 @@ pageSchema.pre('validate', function(next){
 	// this.update(this, {$set: { urlTitle: makeUrlTitle(this.title) }});
 	next();
 })
-
+pageSchema.statics.find = function (name, cb){
+	return this.find({tags: {$in: [name]}}).exec()
+}
 var Page = mongoose.model("Page", pageSchema);
 var User = mongoose.model("User", userSchema);
 

@@ -25,7 +25,8 @@ router.route('/')
             title: req.body.title,
             content: req.body.content,
             status: req.body.status,
-        }
+            tags: req.body.tags.replace(/^\s+|\s+$/g, '').split(",")
+        };
         var page = new Page(pageInfo)
         page.save()
             .then(function(data) {
@@ -37,6 +38,20 @@ router.route('/')
 
     });
 
+
+router.route("/add")
+    .get(function(req, res) {
+        res.render('addpage', {});
+    });
+router.route("/tags/:tagName")
+    .get(function(req, res){
+        Page.find(req.params.tagName)
+        .then(function(results){
+            res.render('index', {pages: results})
+        }).then(null, function(err){
+            console.error(err);
+        })
+    })
 router.route("/:urlTitle")
     .get(function(req, res) {
         Page.findOne({
@@ -49,11 +64,6 @@ router.route("/:urlTitle")
             .then(null, function(err) {
                 console.error(err);
             });
-    });
-
-router.route("/add")
-    .get(function(req, res) {
-        res.render('addpage', {})
     });
 
 module.exports = router;
